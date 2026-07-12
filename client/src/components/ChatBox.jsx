@@ -45,19 +45,21 @@ export default function ChatBox({ foodPostId, otherUserName, otherUserAvatar, is
     }
   };
 
-  
-  useEffect(() => {
-    if (!foodPostId) return;
-    fetchMessages(false);
-  }, [foodPostId]);
 
-  
   useEffect(() => {
     clearInterval(pollRef.current);
-    if (!isOpen || !foodPostId) return;
-    pollRef.current = setInterval(() => fetchMessages(true), 8000);
+    if (!foodPostId) return;
+    if (isOpen) {
+      // Chat khulte hi turant fetch karo
+      fetchMessages(false);
+      pollRef.current = setInterval(() => fetchMessages(true), 8000);
+    } else {
+      // Chat band ho par background mein 10 sec pe sirf count check karo
+      pollRef.current = setInterval(() => fetchMessages(true), 10000);
+    }
     return () => clearInterval(pollRef.current);
   }, [isOpen, foodPostId]);
+
 
   // Scroll inside chat panel when new messages arrive
   useEffect(() => {
